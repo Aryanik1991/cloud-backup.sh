@@ -25,26 +25,25 @@ elif [ -z $path ]; then
          echo "Error: $path can not be empty"
          exit 1
  fi
+ #Check AWS CLI command
+if ! command -v aws cli &>>/dev/nul; then
+        echo "AWS CLI is not install. Pleas install it."
+        exit 1
+fi
 
  #Define backup file name and compress it
  backup_new="$(dirname $path)/backup_$(basename $path)_$(date +%Y%m%d%H%M%S).tar.xz"
  tar -cJf $backup_new -C $(dirname $path) $(basename $path)
-
  if [ $? -eq 0 ]; then
          echo "backup file created"
  else
          echo "backup file can not created"
          exit 1
  fi
- #Define s3 bucket and check AWS CLi command
+ #Define s3 bucket and Upload backup file to the s3 bucket
 s3_bucket="backuplogarya"
-if ! command -v aws cli &>>/dev/nul; then
-        echo "AWS CLI command is not install. Pleas install it."
-        exit 1
-fi
-
- #Upload backup file to the s3 bucket
 aws s3 cp $backup_new s3://$s3_bucket &>>/dev/null
+
 if [ $? -eq 0 ]; then
         echo "Upload backup to s3://$s3_bucket/ completed"
 else
