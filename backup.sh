@@ -32,8 +32,8 @@ if ! command -v aws cli &>>/dev/nul; then
 fi
 
  #Define backup file name and compress it
- backup_new="$(dirname $path)/backup_$(basename $path)_$(date +%Y%m%d%H%M%S).tar.xz"
- tar -cJf $backup_new -C $(dirname $path) $(basename $path)
+ backup_new="$(dirname $path)/backup_$(basename $path)_$(date +%Y%m%d%H%M%S).tar.gz"
+ tar -czf $backup_new -C $(dirname $path) $(basename $path)
  if [ $? -eq 0 ]; then
          echo "backup file created"
  else
